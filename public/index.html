@@ -1,55 +1,94 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Calculadoras Leve Academy</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-        h1 {
-            color: #4a4a4a;
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #667eea;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        a:hover {
-            background-color: #556cd6;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadoras Leve Academy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #1F2A6D;
+      padding: 20px 0;
+      text-align: center;
+    }
+    header img {
+      max-height: 60px;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    main h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .list {
+      background-color: #f0f6ff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .list a {
+      display: block;
+      margin: 12px 0;
+      color: #1F2A6D;
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .list a:hover {
+      color: #ff6600;
+    }
+    footer {
+      background-color: #1F2A6D;
+      color: #ccc;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+    }
+    footer a {
+      color: #ccc;
+      margin-left: 10px;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <img src="logo.png" alt="Leve Academy Logo" />
+  </header>
+  <main>
     <h1>Calculadoras Leve Academy</h1>
-    <ul>
-        <li><a href="/carboidratos/">Calculadora de Carboidratos</a></li>
-        <li><a href="/proteinas/">Calculadora de Proteínas</a></li>
-        <li><a href="/gorduras/">Calculadora de Gorduras</a></li>
-        <li><a href="/imc/">Calculadora de IMC</a></li>
-        <li><a href="/tmb/">Calculadora de TMB</a></li>
-        <li><a href="/agua/">Calculadora de Consumo de Água</a></li>
-        <li><a href="/calorias/">Calculadora de Calorias</a></li>
-        <li><a href="/refeicoes/">Divisão de Macronutrientes</a></li>
-    </ul>
+    <div class="list">
+      <a href="/carboidratos/">Calculadora de Carboidratos</a>
+      <a href="/proteinas/">Calculadora de Proteínas</a>
+      <a href="/gorduras/">Calculadora de Gorduras</a>
+      <a href="/imc/">Calculadora de IMC</a>
+      <a href="/tmb/">Calculadora de TMB</a>
+      <a href="/agua/">Calculadora de Consumo de Água</a>
+      <a href="/calorias/">Calculadora de Calorias</a>
+      <a href="/refeicoes/">Divisão de Macronutrientes</a>
+    </div>
+  </main>
+  <footer>
+    Esta plataforma não substitui o parecer médico profissional. Sempre consulte um médico para tratar de assuntos relativos à saúde.<br/>
+    Copyright © Leve Academy 2025 |
+    <a href="#">Política de Privacidade</a> |
+    <a href="#">Termos de Uso</a>
+  </footer>
 </body>
 </html>
