@@ -1,18 +1,395 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Proteínas</title>
+    <title>Calculadora de Carboidratos</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 40px; background: #f8fafc; }
-        h1 { color: #333; }
-        p { color: #666; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E3F5FD 30%,#DBF7FF 70%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: clamp(1.8em, 4vw, 2.5em);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            padding: 0 10px;
+            
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        #searchInput:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .suggestion-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+        
+        .suggestion-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            transform: scale(0);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+        
+        .result.show {
+            transform: scale(1);
+        }
+        
+        .result h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .result .carbs-amount {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .result .unit {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .info-box h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.3s ease-in-out;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+                max-width: calc(100% - 40px);
+            }
+            h1 {
+                font-size: 2em;
+            }
+    
+            #searchInput {
+                padding: 15px;
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Calculadora de Proteínas</h1>
-    <p>Em breve aqui você poderá usar a calculadora de proteínas.</p>
+    <div class="container">
+        <h1>🥖 Calculadora de Carboidratos</h1>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Digite o nome do alimento (ex: arroz, batata, pão...)" autocomplete="off">
+            <div id="suggestions" class="suggestions"></div>
+        </div>
+        
+        <div id="result" class="result">
+            <h2 id="foodName">Selecione um alimento</h2>
+            <div class="carbs-amount" id="carbsAmount">-</div>
+            <div class="unit">gramas de carboidratos por 100g do alimento</div>
+        </div>
+        
+        <div class="info-box">
+            <h3>💡 Como usar:</h3>
+            <p>Digite o nome do alimento que você quer consultar e selecione da lista que aparece. Os valores são baseados em 100 gramas do alimento e podem variar conforme a marca e método de preparo.</p>
+        </div>
+    </div>
+
+    <script>
+const foods = {
+    "abacaxi": 11.6,
+    "abóbora moranga cozida": 6,
+    "abóbora cabotian (japonesa) cozida": 10.8,
+    "açaí": 7.66,
+    "achocolatado em pó": 91.6,
+    "achocolatado em pó light": 71.9,
+    "amaranto cozido": 18.7,
+    "arroz branco cozido": 30,
+    "arroz integral cozido": 23.5,
+    "aveia em farelo": 65,
+    "aveia em farinha": 67,
+    "aveia em flocos": 64.5,
+    "banana": 26.7,
+    "barra de cereais": 76.1,
+    "batata baroa cozida": 19.9,
+    "batata doce cozida": 23.1,
+    "batata frita": 32.9,
+    "batata inglesa cozida": 12.3,
+    "biscoito cream cracker": 67.8,
+    "biscoito de arroz": 81.5,
+    "biscoito de maisena": 75.2,
+    "biscoito de polvilho": 80.5,
+    "biscoito doce simples": 76.3,
+    "bolo de cenoura": 64,
+    "bolo de fubá": 50.8,
+    "bolo de trigo simples": 55.8,
+    "broa": 47.8,
+    "caldo de cana": 18.3,
+    "cará cozido": 18.9,
+    "cereal matinal": 87.1,
+    "cerveja": 3.34,
+    "chocolate ao leite": 59.6,
+    "chocolate branco": 59.1,
+    "creme de arroz em pó": 21.9,
+    "cuscuz de milho": 22.2,
+    "cuscuz marroquino": 42.6,
+    "doce de leite": 58.8,
+    "edamame": 8.91,
+    "ervilha cozida": 19.2,
+    "farinha de arroz": 82.6,
+    "farinha de batata doce": 79,
+    "farinha de grão-de-bico": 57.82,
+    "farinha de mandioca": 87.5,
+    "farinha de milho": 79.8,
+    "farinha de teff": 73.1,
+    "farinha de trigo enriquecida": 75.5,
+    "farinha de trigo não enriquecida": 76.31,
+    "feijão carioca cozido": 15.3,
+    "feijão preto cozido": 14,
+    "floco de milho": 80.4,
+    "flocos de arroz": 78,
+    "fubá": 79.45,
+    "goiabada": 78.7,
+    "granola sem açúcar": 66.1,
+    "grão-de-bico cozido": 20.8,
+    "inhame cozido": 20.5,
+    "iogurte natural": 4.76,
+    "laranja": 10.8,
+    "leite condensado": 57,
+    "leite condensado light": 60,
+    "leite de arroz": 10,
+    "leite de aveia": 7.5,
+    "leite de soja": 2.9,
+    "lentilha cozida": 19.6,
+    "maçã": 15.7,
+    "macarrão bifun": 77.5,
+    "macarrão cozido, trigo": 21,
+    "mamão": 10.7,
+    "mandioca cozida": 29.8,
+    "mandioquinha cozida": 18.9,
+    "manga": 16,
+    "mel": 80.9,
+    "melancia": 6.53,
+    "melão": 5.7,
+    "milho cozido": 26.7,
+    "missô": 4.77,
+    "nutella": 60,
+    "pão de alho": 45.6,
+    "pão de batata": 53.2,
+    "pão de forma": 44.1,
+    "pão de forma integral": 48.6,
+    "pão de hambúrguer": 53.3,
+    "pão de hot dog": 54,
+    "pão de queijo": 35.6,
+    "pão francês": 61.6,
+    "pão integral": 43.3,
+    "pão sírio": 55.7,
+    "passas": 79.2,
+    "pipoca crua": 76.4,
+    "pipoca pronta c/ óleo": 70.3,
+    "polenta": 23.2,
+    "polvilho azedo": 85.0,
+    "polvilho doce": 86.8,
+    "pudim de leite": 19.8,
+    "quinoa cozida": 21.3,
+    "quinoa crua": 64.2,
+    "rap 10": 45,
+    "semolina": 23.2,
+    "soja em grãos cozida": 8.44,
+    "suco de uva integral sem açúcar": 14.8,
+    "tâmaras secas": 80.1,
+    "tapioca": 71.9,
+    "uva": 13.7
+};
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsDiv = document.getElementById('suggestions');
+        const resultDiv = document.getElementById('result');
+        const foodNameDiv = document.getElementById('foodName');
+        const carbsAmountDiv = document.getElementById('carbsAmount');
+
+        let currentSuggestions = [];
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length < 2) {
+                hideSuggestions();
+                return;
+            }
+
+            currentSuggestions = Object.keys(foods).filter(food => 
+                food.toLowerCase().includes(query)
+            ).slice(0, 8);
+
+            showSuggestions(currentSuggestions);
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && currentSuggestions.length > 0) {
+                selectFood(currentSuggestions[0]);
+            }
+        });
+
+        function showSuggestions(suggestions) {
+            if (suggestions.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            suggestionsDiv.innerHTML = suggestions.map(food => 
+                `<div class="suggestion-item" onclick="selectFood('${food}')">${capitalizeWords(food)}</div>`
+            ).join('');
+            
+            suggestionsDiv.style.display = 'block';
+        }
+
+        function hideSuggestions() {
+            suggestionsDiv.style.display = 'none';
+        }
+
+        function selectFood(foodKey) {
+            const carbs = foods[foodKey];
+            const foodName = capitalizeWords(foodKey);
+            
+            searchInput.value = foodName;
+            hideSuggestions();
+            
+            foodNameDiv.textContent = foodName;
+            carbsAmountDiv.textContent = carbs.toFixed(1);
+            
+            resultDiv.classList.remove('show');
+            setTimeout(() => {
+                resultDiv.classList.add('show');
+                resultDiv.classList.add('pulse');
+                setTimeout(() => resultDiv.classList.remove('pulse'), 300);
+            }, 100);
+        }
+
+        function capitalizeWords(str) {
+            return str.split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+
+        // Initialize with a default selection
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                resultDiv.classList.add('show');
+            }, 500);
+        });
+    </script>
 </body>
 </html>
